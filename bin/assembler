@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'trollop'
+require 'assembler'
 
 opts = Trollop::options do
 
@@ -13,4 +14,12 @@ opts = Trollop::options do
   EOS
   opt :left, "fastq file", :type => String
   opt :right, "fastq file", :type => String
+  opt :k, "k", :type => :int, :default => 21
+  opt :memory, "memory", :type => :int, :default => 1
+  opt :tables, "tables", :type => :int, :default => 3
 end
+
+table_size = (1e9*opts.memory/opts.tables).to_i
+memory = (1e9*opts.memory).to_i
+
+a = Assembler::Assembler.new(table_size, opts.tables, opts.k)

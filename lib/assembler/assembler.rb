@@ -2,7 +2,10 @@ module Assembler
 
   class Assembler
 
-    def initialize
+    attr_accessor :bloom
+
+    def initialize(size, count, k)
+      @bloom = Bloom.new(size, count, k)
     end
 
   end
