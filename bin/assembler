@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require 'trollop'
+
+opts = Trollop::options do
+
+  banner <<-EOS
+
+  Assembler v0.0.1 by Chris Boursnell (cmb211@cam.ac.uk)
+
+  OPTIONS:
+
+  EOS
+  opt :left, "fastq file", :type => String
+  opt :right, "fastq file", :type => String
+end
