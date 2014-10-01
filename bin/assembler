@@ -12,14 +12,23 @@ opts = Trollop::options do
   OPTIONS:
 
   EOS
-  opt :left, "fastq file", :type => String, :required => true
-  opt :right, "fastq file", :type => String
+  opt :fastq, "comma separated list of fastq files",
+      :type => String, :required => true
   opt :search,
       "file containing start and end kmers to search", :type => String,
       :require => true
   opt :k, "k", :type => :int, :default => 21
   opt :memory, "memory in GB", :type => :int, :default => 1
   opt :tables, "tables", :type => :int, :default => 3
+  opt :output, "output file name", :type => String, :default => "bestpath.out"
+end
+
+if !File.exist?(opts.search)
+  abort "Can't find #{opts.search}"
+end
+
+opts.fastq.split(",").each do |file|
+  abort "Can't find #{file}" if !File.exist?(file)
 end
 
 table_size = (1e9*opts.memory/opts.tables).to_i
@@ -27,20 +36,17 @@ memory = (1e9*opts.memory).to_i
 
 a = Assembler::Assembler.new(table_size, opts.tables, opts.k)
 
-a.load_fastq_file opts.left
-if opts.right
-  a.load_fastq_file opts.right
+opts.fastq.split(",").each do |fastq|
+  a.load_fastq_file fastq
 end
 
-if !File.exist?(opts.search)
-  abort "Can't find #{opts.search}"
-end
-
+start=""
+goal=""
 File.open("#{opts.search}") do |io|
   start = io.readline.chomp
   goal = io.readline.chomp
 end
 
-bestpath = a.bfsearch(start, goal)
+bestpath = a.bf_search(start, goal)
 
-puts bestpath
+File.open("#{opts.output}", "wb") {|io| io.write(bestpath)}

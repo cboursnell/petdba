@@ -16,13 +16,19 @@ module Assembler
       seq = file.readline
       na = file.readline
       quals = file.readline
+      count=0
       while name
         @bloom.add(seq)
+        if count%1000000==0
+          print "."
+        end
         name = file.readline rescue nil
         seq = file.readline rescue nil
         na = file.readline rescue nil
         quals = file.readline rescue nil
+        count+=1
       end
+      puts "Done loading #{fastq}"
     end
 
     def df_search(start, goal, path, total)
