@@ -19,7 +19,7 @@ module Assembler
       count=0
       while name
         @bloom.add(seq)
-        if count%1000000==0
+        if count%10000==0
           print "."
         end
         name = file.readline rescue nil
@@ -60,6 +60,7 @@ module Assembler
       queue << {:kmer => start, :path => start, :total => 0}
       paths = []
       shortest = -1
+      ticker=0
       while queue.size > 0
         kmer_hash = queue.shift
         kmer = kmer_hash[:kmer]
@@ -81,6 +82,10 @@ module Assembler
             end
           end
         end
+        if ticker%1_000_000==0
+          puts kmer_hash[:path].length
+        end
+        ticker+=1
       end
       best = 0
       bestpath = ""
